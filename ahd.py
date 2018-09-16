@@ -6,6 +6,7 @@ from urllib.request import urlopen, urlretrieve
 from urllib.parse import quote_plus as qp
 from re import findall, fullmatch
 from base64 import b64decode as b64d
+import os
 from pathlib import Path
 from dataclasses import dataclass
 
@@ -108,6 +109,10 @@ class AnimeHeaven:
       b'|', str.encode(findall('lynt=lynt\.replace\(\/\\\|\/g,"(.*?)"\);', ep_html)[0])
     )).decode('utf8')
     
+    # Check to make sure directory for anime exists, if not create it.
+    if not os.path.isdir(f"animes/{anime.name}/"):
+      os.mkdir(f"animes/{anime.name}/")
+
     # Download the episode to out/anime_name/episode.mp4. When a chunk downloaded, urlretrieve 
     # calls the function that we provided as 3rd argument. All it does is simply show how much
     # we downloaded so far in percentage.
@@ -129,6 +134,11 @@ class AnimeHeaven:
 #TODO: Support 'l' keyword for last episode and None for all (this will make *episodes* 
 # optional arg.)
 if __name__ == '__main__':
+  
+  # Check if animes directory exists, if not create it.
+  if not os.path.isdir("animes/"):
+    os.mkdir("animes/")
+    
   # Create parser and arguments.
   ap = ArgumentParser(
     description='[a]nime[h]eaven [d]ownloader',
